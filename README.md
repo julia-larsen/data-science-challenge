@@ -198,6 +198,38 @@ Stakeholder communication guidance:
 4. Testing:
 - Unit tests in `tests/test_schema.py` cover future intent, ambiguity/missing-field handling, quote-length enforcement, and timing/use consistency.
 
+## Schema Design Rationale (Pydantic)
+
+The schema was designed to map directly to PharmaCorp's questions while preserving uncertainty:
+
+- `biologic_timing`, `biologic_use`, `biologic_names`, `planned_biologic_names`:
+  support prevalence measurement and separate current use from planned/considering states.
+- `reasons_not_on_biologic`:
+  captures barriers in normalized business-relevant categories (`insurance`, `cost`, `side_effect_fear`, etc.).
+- `non_biologic_treatments`:
+  supports pre-biologic treatment sequencing analysis.
+- `referral_pathway_steps`, `referral_steps_count`:
+  supports pathway complexity analysis.
+- `meta.churn_suspected`, `meta.missing_fields`, `meta.uncertainty_notes`:
+  make missingness and ambiguity first-class outputs instead of hidden assumptions.
+
+Validation choices were intentionally conservative:
+- coerce contradictory timing/use combinations to a consistent interpretation
+- clip evidence quotes for auditability and compact reporting
+- auto-track missing fields to make downstream limitations quantifiable
+
+## Commercial Implications (With Caveats)
+
+Directional actions from this sample:
+
+1. Prioritize access strategy (payer support + affordability messaging): insurance/cost barriers are the strongest blockers in the not-current cohort.
+2. Strengthen safety communication: side-effect fear appears as a major friction point before biologic adoption.
+3. Segment by readiness stage: patients in `considering`/`planned` states are likely the most actionable near-term audience.
+4. Reduce referral friction: pathway variability suggests value in referral education and specialist access support.
+
+Confidence caveat:
+- Results are descriptive, not inferential (`N=50` total; `n=14` not-current subgroup), so these should guide hypothesis prioritization and next data collection, not final commercial commitments.
+
 ## Optional Engineering Extras Implemented
 
 ### 1. Sankey Diagram For Referral Pathways
