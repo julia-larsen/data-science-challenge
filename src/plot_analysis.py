@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import statistics
 from collections import Counter
 from pathlib import Path
 from typing import Dict, List, Sequence, Tuple
@@ -12,7 +13,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
-from .analyze import canonicalize_step
+from .analyze import canonicalize_step, normalize_reason, referral_step_count
 
 SUMMARY_PATH_DEFAULT = "data/analysis_summary.json"
 EXTRACTED_PATH_DEFAULT = "data/extracted.jsonl"
@@ -164,6 +165,169 @@ def chart_churn_distribution(summary: Dict, out_dir: Path) -> Path:
     return output_path
 
 
+def chart_reason_rates_by_timing(rows: List[Dict], out_dir: Path) -> Path:
+    key_reasons = ["insurance", "cost", "side_effect_fear"]
+    preferred_order = ["considering", "planned", "past", "never", "unknown", "current"]
+    timing_counts = Counter(str(row.get("biologic_timing")) for row in rows)
+    timings = [t for t in preferred_order if t in timing_counts]
+
+    numerators: Dict[str, List[float]] = {reason: [] for reason in key_reasons}
+    denominators: List[int] = []
+    for timing in timings:
+        cohort = [row for row in rows if str(row.get("biologic_timing")) == timing]
+        denom = len(cohort)
+        denominators.append(denom)
+        for reason in key_reasons:
+            if denom == 0:
+                numerators[reason].append(0.0)
+                continue
+            count = sum(
+                1
+                for row in cohort
+                if reason
+                in {
+                    normalize_reason(r)
+                    for r in (row.get("reasons_not_on_biologic") or [])
+                }
+            )
+            numerators[reason].append((count / denom) * 100)
+
+    plt.figure(figsize=(10, 5))
+    x = list(range(len(timings)))
+    width = 0.24
+    palette = {
+        "insurance": "#B85C38",
+        "cost": "#2A6F97",
+        "side_effect_fear": "#6C5B7B",
+    }
+    for i, reason in enumerate(key_reasons):
+        offset = (i - 1) * width
+        xs = [xi + offset for xi in x]
+        ys = numerators[reason]
+        plt.bar(xs, ys, width=width, label=reason, color=palette[reason], alpha=0.9)
+
+    labels = [f"{timing}\n(n={n})" for timing, n in zip(timings, denominators)]
+    plt.xticks(x, labels)
+    plt.ylabel("% of timing cohort")
+    plt.xlabel("Biologic timing")
+    plt.title("Barrier Rates By Biologic Timing (Exploratory)")
+    plt.ylim(0, 100)
+    plt.grid(axis="y", alpha=0.2)
+    plt.legend()
+    plt.tight_layout()
+
+    output_path = out_dir / "barrier_rates_by_biologic_timing.png"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(output_path, dpi=160)
+    plt.close()
+    return output_path
+
+
+def chart_referral_steps_by_status(rows: List[Dict], out_dir: Path) -> Path:
+    groups = {"current": [], "not_current": []}
+    for row in rows:
+        count = referral_step_count(row)
+        if count is None:
+            continue
+        key = "current" if row.get("biologic_timing") == "current" else "not_current"
+        groups[key].append(count)
+
+    labels = ["current", "not_current"]
+    medians = [
+        statistics.median(groups["current"]) if groups["current"] else 0.0,
+        statistics.median(groups["not_current"]) if groups["not_current"] else 0.0,
+    ]
+    means = [
+        round(statistics.mean(groups["current"]), 2) if groups["current"] else 0.0,
+        round(statistics.mean(groups["not_current"]), 2)
+        if groups["not_current"]
+        else 0.0,
+    ]
+    sample_sizes = [len(groups["current"]), len(groups["not_current"])]
+
+    plt.figure(figsize=(8, 5))
+    x = list(range(len(labels)))
+    width = 0.34
+    bars_median = plt.bar(
+        [xi - width / 2 for xi in x],
+        medians,
+        width=width,
+        label="median steps",
+        color="#5E8C61",
+    )
+    bars_mean = plt.bar(
+        [xi + width / 2 for xi in x],
+        means,
+        width=width,
+        label="mean steps",
+        color="#1D4E89",
+    )
+
+    for bars in (bars_median, bars_mean):
+        for bar in bars:
+            plt.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height(),
+                f"{bar.get_height():.2f}",
+                ha="center",
+                va="bottom",
+                fontsize=9,
+            )
+
+    xtick_labels = [f"{label}\n(n={n})" for label, n in zip(labels, sample_sizes)]
+    plt.xticks(x, xtick_labels)
+    plt.ylabel("Referral steps")
+    plt.xlabel("Biologic status group")
+    plt.title("Referral Step Complexity: Current vs Not-Current")
+    plt.grid(axis="y", alpha=0.2)
+    plt.legend()
+    plt.tight_layout()
+
+    output_path = out_dir / "referral_steps_by_biologic_status.png"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(output_path, dpi=160)
+    plt.close()
+    return output_path
+
+
+def chart_missingness_by_field(summary: Dict, out_dir: Path) -> Path:
+    missing = summary["qa"]["missingness"]
+    ordered = sorted(
+        (
+            (field, float(stats["missing_rate"]) * 100)
+            for field, stats in missing.items()
+        ),
+        key=lambda x: x[1],
+        reverse=True,
+    )
+    labels = [field for field, _ in ordered]
+    values = [round(rate, 2) for _, rate in ordered]
+
+    plt.figure(figsize=(10, 6))
+    bars = plt.barh(labels, values, color="#C06C84")
+    plt.gca().invert_yaxis()
+    plt.xlabel("Missing rate (%)")
+    plt.ylabel("Field")
+    plt.title("Field Missingness Rates (N=50)")
+    plt.grid(axis="x", alpha=0.2)
+
+    for bar, value in zip(bars, values):
+        plt.text(
+            value + 0.5,
+            bar.get_y() + bar.get_height() / 2,
+            f"{value:.1f}%",
+            va="center",
+            fontsize=8,
+        )
+
+    plt.tight_layout()
+    output_path = out_dir / "field_missingness_rates.png"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(output_path, dpi=160)
+    plt.close()
+    return output_path
+
+
 def _dedupe_consecutive(steps: Sequence[str]) -> List[str]:
     if not steps:
         return []
@@ -260,8 +424,11 @@ def main() -> None:
     outputs = [
         chart_timing_distribution(summary, out_dir),
         chart_reasons_not_on_biologic(summary, out_dir),
+        chart_reason_rates_by_timing(extracted_rows, out_dir),
         chart_top_treatments(summary, out_dir),
         chart_referral_steps(summary, out_dir),
+        chart_referral_steps_by_status(extracted_rows, out_dir),
+        chart_missingness_by_field(summary, out_dir),
         chart_churn_distribution(summary, out_dir),
     ]
     outputs.extend(chart_referral_pathway_sankey(extracted_rows, out_dir))

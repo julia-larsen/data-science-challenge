@@ -70,6 +70,13 @@ Assumptions used for business calculations:
 - Sensitivity view excludes `biologic_timing == "unknown"` from denominator.
 - "Not on biologic" cohort includes all records where `biologic_timing != "current"`.
 
+### Sample Size Context
+
+- Dataset size is `N=50` synthetic interviews; this is useful for directional exploration, not stable inference.
+- Cross-factor charts that compare subgroups can become very noisy quickly at this sample size.
+- The not-on-biologic cohort is only `n=14`, so percentages in that slice should be interpreted cautiously.
+- These patterns should be re-evaluated on a materially larger dataset before commercial decisions.
+
 ## Business Questions
 
 ### 1. What percentage of patients appear to be on a biologic treatment?
@@ -91,6 +98,12 @@ Reason counts (non-mutually-exclusive):
 Interpretation:
 - Access barriers (insurance + cost) are the strongest observed blockers.
 - Safety concern (side-effect fear) is similarly prominent.
+
+Supportive cross-factor view (exploratory, small-sample):
+
+![Barrier rates by biologic timing](data/figures/barrier_rates_by_biologic_timing.png)
+
+Note: subgroup denominators are small for several timing states, so this chart is directional and would need a larger sample to be decision-grade.
 
 ### 3. What other treatments are commonly discussed/tried before biologic?
 
@@ -128,6 +141,18 @@ Interpretation:
 - A two-step pathway is typical when pathway detail is present.
 - Many transcripts are compressed/incomplete and only mention one provider, which likely understates true referral complexity.
 
+Supportive comparison (exploratory, small-sample):
+
+![Referral steps by biologic status](data/figures/referral_steps_by_biologic_status.png)
+
+Note: this comparison uses only records with inferable referral-step counts, so larger and more complete data is needed for stronger conclusions.
+
+Supportive pathway-flow view (exploratory, transition-level):
+
+![Referral pathway sankey](data/figures/referral_pathway_sankey.png)
+
+[Open interactive Sankey HTML](data/figures/referral_pathway_sankey.html)
+
 ## Data Limitations (Churn and Incompleteness)
 
 Churn metadata:
@@ -143,6 +168,12 @@ Impact on interpretation:
 - Referral and geography insights are least reliable because pathway/location fields are often absent.
 - For not-on-biologic reasons, absence of reason text can reflect missing narrative rather than no barrier.
 - Incomplete interviews can bias estimates toward clearer and more complete journeys.
+
+Missingness profile:
+
+![Field missingness rates](data/figures/field_missingness_rates.png)
+
+This reinforces that more data and more complete journeys are needed to make subgroup analyses materially more robust.
 
 Stakeholder communication guidance:
 - Treat percentages as directional for this sample, not population estimates.
@@ -236,31 +267,3 @@ Threshold sweep (same model/data):
 Interpretation:
 - This baseline is useful as an independent open-source check, but over-predicts labels in this setting.
 - The Gemini structured extraction remains the primary signal; HF baseline is a robustness sanity check.
-
-## Visualizations
-
-### Biologic Timing Distribution
-
-![Biologic timing distribution](data/figures/biologic_timing_distribution.png)
-
-### Reasons Not On Biologic
-
-![Reasons not on biologic](data/figures/reasons_not_on_biologic.png)
-
-### Top Pre-Biologic Treatments (Not-Current Cohort)
-
-![Top pre-biologic treatments](data/figures/top_pre_biologic_treatments_not_current.png)
-
-### Referral Step Distribution
-
-![Referral step distribution](data/figures/referral_step_distribution.png)
-
-### Referral Pathway Sankey
-
-![Referral pathway sankey](data/figures/referral_pathway_sankey.png)
-
-[Open interactive Sankey HTML](data/figures/referral_pathway_sankey.html)
-
-### Churn Suspected Distribution
-
-![Churn suspected distribution](data/figures/churn_suspected_distribution.png)
