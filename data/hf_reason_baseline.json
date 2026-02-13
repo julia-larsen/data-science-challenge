@@ -1,0 +1,456 @@
+{
+  "config": {
+    "model": "valhalla/distilbart-mnli-12-1",
+    "threshold": 0.55,
+    "sweep_thresholds": [
+      0.45,
+      0.55,
+      0.65
+    ],
+    "max_chars": 2200,
+    "cohort_definition": "biologic_timing != 'current'",
+    "candidate_reason_labels": [
+      "insurance",
+      "cost",
+      "side_effect_fear",
+      "needle_fear",
+      "doctor_advice",
+      "monitoring_burden",
+      "access_delay",
+      "other"
+    ]
+  },
+  "dataset": {
+    "not_current_records": 14,
+    "extracted_source": "data/extracted.jsonl",
+    "interviews_source": "data/interviews.json"
+  },
+  "agreement_with_gemini": {
+    "exact_set_match_count": 2,
+    "exact_set_match_rate": 0.1429,
+    "mean_jaccard_similarity": 0.2756,
+    "per_label": {
+      "insurance": {
+        "tp": 4,
+        "fp": 3,
+        "fn": 1,
+        "precision": 0.5714,
+        "recall": 0.8,
+        "f1": 0.6667
+      },
+      "cost": {
+        "tp": 2,
+        "fp": 3,
+        "fn": 2,
+        "precision": 0.4,
+        "recall": 0.5,
+        "f1": 0.4444
+      },
+      "side_effect_fear": {
+        "tp": 1,
+        "fp": 3,
+        "fn": 3,
+        "precision": 0.25,
+        "recall": 0.25,
+        "f1": 0.25
+      },
+      "needle_fear": {
+        "tp": 1,
+        "fp": 4,
+        "fn": 0,
+        "precision": 0.2,
+        "recall": 1.0,
+        "f1": 0.3333
+      },
+      "doctor_advice": {
+        "tp": 0,
+        "fp": 7,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "monitoring_burden": {
+        "tp": 0,
+        "fp": 5,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "access_delay": {
+        "tp": 0,
+        "fp": 4,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "other": {
+        "tp": 0,
+        "fp": 8,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    }
+  },
+  "aggregate_counts": {
+    "hf_reason_counts": {
+      "insurance": 7,
+      "doctor_advice": 7,
+      "cost": 5,
+      "other": 8,
+      "monitoring_burden": 5,
+      "access_delay": 4,
+      "needle_fear": 5,
+      "side_effect_fear": 4
+    },
+    "gemini_reason_counts": {
+      "cost": 4,
+      "insurance": 5,
+      "side_effect_fear": 4,
+      "needle_fear": 1,
+      "doctor_advice": 1
+    }
+  },
+  "threshold_sweep": [
+    {
+      "threshold": 0.45,
+      "exact_set_match_rate": 0.1429,
+      "mean_jaccard_similarity": 0.2787,
+      "avg_hf_labels_per_patient": 4.7857
+    },
+    {
+      "threshold": 0.55,
+      "exact_set_match_rate": 0.1429,
+      "mean_jaccard_similarity": 0.2756,
+      "avg_hf_labels_per_patient": 3.2143
+    },
+    {
+      "threshold": 0.65,
+      "exact_set_match_rate": 0.1429,
+      "mean_jaccard_similarity": 0.1994,
+      "avg_hf_labels_per_patient": 1.8571
+    }
+  ],
+  "patient_results": [
+    {
+      "patient_id": "P002",
+      "biologic_timing": "considering",
+      "gemini_reasons": [
+        "cost"
+      ],
+      "hf_predicted_reasons": [
+        "insurance",
+        "doctor_advice",
+        "cost",
+        "other",
+        "monitoring_burden",
+        "access_delay"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.8406,
+        "cost": 0.7976,
+        "side_effect_fear": 0.4391,
+        "needle_fear": 0.3329,
+        "doctor_advice": 0.8297,
+        "monitoring_burden": 0.7474,
+        "access_delay": 0.6543,
+        "other": 0.7813
+      },
+      "agreement_jaccard": 0.1667
+    },
+    {
+      "patient_id": "P004",
+      "biologic_timing": "considering",
+      "gemini_reasons": [
+        "cost",
+        "insurance"
+      ],
+      "hf_predicted_reasons": [
+        "doctor_advice",
+        "insurance"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.5822,
+        "cost": 0.4755,
+        "side_effect_fear": 0.4048,
+        "needle_fear": 0.3151,
+        "doctor_advice": 0.5948,
+        "monitoring_burden": 0.3372,
+        "access_delay": 0.3573,
+        "other": 0.4541
+      },
+      "agreement_jaccard": 0.3333
+    },
+    {
+      "patient_id": "P016",
+      "biologic_timing": "considering",
+      "gemini_reasons": [
+        "cost",
+        "insurance",
+        "side_effect_fear"
+      ],
+      "hf_predicted_reasons": [
+        "cost",
+        "insurance",
+        "access_delay",
+        "other",
+        "needle_fear"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.5872,
+        "cost": 0.5895,
+        "side_effect_fear": 0.5215,
+        "needle_fear": 0.5517,
+        "doctor_advice": 0.5309,
+        "monitoring_burden": 0.5234,
+        "access_delay": 0.5734,
+        "other": 0.5718
+      },
+      "agreement_jaccard": 0.3333
+    },
+    {
+      "patient_id": "P017",
+      "biologic_timing": "considering",
+      "gemini_reasons": [],
+      "hf_predicted_reasons": [
+        "other",
+        "doctor_advice"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.5161,
+        "cost": 0.388,
+        "side_effect_fear": 0.4494,
+        "needle_fear": 0.391,
+        "doctor_advice": 0.6067,
+        "monitoring_burden": 0.5326,
+        "access_delay": 0.4532,
+        "other": 0.7289
+      },
+      "agreement_jaccard": 0.0
+    },
+    {
+      "patient_id": "P018",
+      "biologic_timing": "considering",
+      "gemini_reasons": [
+        "cost",
+        "side_effect_fear"
+      ],
+      "hf_predicted_reasons": [],
+      "hf_scores_by_label": {
+        "insurance": 0.2515,
+        "cost": 0.249,
+        "side_effect_fear": 0.3174,
+        "needle_fear": 0.2276,
+        "doctor_advice": 0.3887,
+        "monitoring_burden": 0.2898,
+        "access_delay": 0.2718,
+        "other": 0.2365
+      },
+      "agreement_jaccard": 0.0
+    },
+    {
+      "patient_id": "P024",
+      "biologic_timing": "considering",
+      "gemini_reasons": [
+        "insurance"
+      ],
+      "hf_predicted_reasons": [],
+      "hf_scores_by_label": {
+        "insurance": 0.289,
+        "cost": 0.2371,
+        "side_effect_fear": 0.2931,
+        "needle_fear": 0.2496,
+        "doctor_advice": 0.2759,
+        "monitoring_burden": 0.2759,
+        "access_delay": 0.2428,
+        "other": 0.2805
+      },
+      "agreement_jaccard": 0.0
+    },
+    {
+      "patient_id": "P026",
+      "biologic_timing": "past",
+      "gemini_reasons": [],
+      "hf_predicted_reasons": [
+        "other",
+        "cost",
+        "insurance",
+        "monitoring_burden",
+        "doctor_advice",
+        "needle_fear",
+        "side_effect_fear"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.7461,
+        "cost": 0.755,
+        "side_effect_fear": 0.558,
+        "needle_fear": 0.5689,
+        "doctor_advice": 0.5821,
+        "monitoring_burden": 0.6168,
+        "access_delay": 0.5191,
+        "other": 0.8068
+      },
+      "agreement_jaccard": 0.0
+    },
+    {
+      "patient_id": "P032",
+      "biologic_timing": "considering",
+      "gemini_reasons": [
+        "insurance"
+      ],
+      "hf_predicted_reasons": [
+        "insurance",
+        "other"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.5834,
+        "cost": 0.5444,
+        "side_effect_fear": 0.4362,
+        "needle_fear": 0.4082,
+        "doctor_advice": 0.5121,
+        "monitoring_burden": 0.4952,
+        "access_delay": 0.4291,
+        "other": 0.5693
+      },
+      "agreement_jaccard": 0.5
+    },
+    {
+      "patient_id": "P044",
+      "biologic_timing": "considering",
+      "gemini_reasons": [
+        "needle_fear",
+        "side_effect_fear"
+      ],
+      "hf_predicted_reasons": [
+        "doctor_advice",
+        "side_effect_fear",
+        "needle_fear",
+        "other",
+        "monitoring_burden"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.4683,
+        "cost": 0.5469,
+        "side_effect_fear": 0.6966,
+        "needle_fear": 0.6947,
+        "doctor_advice": 0.7054,
+        "monitoring_burden": 0.6115,
+        "access_delay": 0.541,
+        "other": 0.6686
+      },
+      "agreement_jaccard": 0.4
+    },
+    {
+      "patient_id": "P045",
+      "biologic_timing": "considering",
+      "gemini_reasons": [
+        "insurance"
+      ],
+      "hf_predicted_reasons": [
+        "side_effect_fear",
+        "monitoring_burden",
+        "doctor_advice",
+        "needle_fear",
+        "insurance",
+        "other",
+        "access_delay",
+        "cost"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.8135,
+        "cost": 0.7809,
+        "side_effect_fear": 0.836,
+        "needle_fear": 0.8189,
+        "doctor_advice": 0.8203,
+        "monitoring_burden": 0.8233,
+        "access_delay": 0.801,
+        "other": 0.8062
+      },
+      "agreement_jaccard": 0.125
+    },
+    {
+      "patient_id": "P047",
+      "biologic_timing": "unknown",
+      "gemini_reasons": [],
+      "hf_predicted_reasons": [],
+      "hf_scores_by_label": {
+        "insurance": 0.1577,
+        "cost": 0.1848,
+        "side_effect_fear": 0.1955,
+        "needle_fear": 0.1748,
+        "doctor_advice": 0.2189,
+        "monitoring_burden": 0.2078,
+        "access_delay": 0.1674,
+        "other": 0.2353
+      },
+      "agreement_jaccard": 1.0
+    },
+    {
+      "patient_id": "P048",
+      "biologic_timing": "planned",
+      "gemini_reasons": [],
+      "hf_predicted_reasons": [
+        "doctor_advice",
+        "insurance",
+        "other",
+        "monitoring_burden",
+        "access_delay",
+        "cost",
+        "side_effect_fear",
+        "needle_fear"
+      ],
+      "hf_scores_by_label": {
+        "insurance": 0.7058,
+        "cost": 0.624,
+        "side_effect_fear": 0.6224,
+        "needle_fear": 0.6008,
+        "doctor_advice": 0.7442,
+        "monitoring_burden": 0.6674,
+        "access_delay": 0.6495,
+        "other": 0.6836
+      },
+      "agreement_jaccard": 0.0
+    },
+    {
+      "patient_id": "P049",
+      "biologic_timing": "considering",
+      "gemini_reasons": [],
+      "hf_predicted_reasons": [],
+      "hf_scores_by_label": {
+        "insurance": 0.2526,
+        "cost": 0.2266,
+        "side_effect_fear": 0.2679,
+        "needle_fear": 0.2501,
+        "doctor_advice": 0.2474,
+        "monitoring_burden": 0.2639,
+        "access_delay": 0.2242,
+        "other": 0.295
+      },
+      "agreement_jaccard": 1.0
+    },
+    {
+      "patient_id": "P050",
+      "biologic_timing": "never",
+      "gemini_reasons": [
+        "doctor_advice",
+        "side_effect_fear"
+      ],
+      "hf_predicted_reasons": [],
+      "hf_scores_by_label": {
+        "insurance": 0.4431,
+        "cost": 0.4614,
+        "side_effect_fear": 0.4895,
+        "needle_fear": 0.4577,
+        "doctor_advice": 0.5017,
+        "monitoring_burden": 0.4713,
+        "access_delay": 0.4716,
+        "other": 0.4845
+      },
+      "agreement_jaccard": 0.0
+    }
+  ]
+}

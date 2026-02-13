@@ -1,0 +1,306 @@
+{
+  "dataset": {
+    "records": 50,
+    "source": "data/extracted.jsonl"
+  },
+  "assumptions": {
+    "biologic_on_treatment_definition": "biologic_timing == 'current'",
+    "unknown_timing_handling": "excluded from known-denominator sensitivity calculation",
+    "not_on_biologic_cohort_definition": "all rows where biologic_timing != 'current'"
+  },
+  "qa": {
+    "missingness": {
+      "age": {
+        "missing_count": 0,
+        "total_count": 50,
+        "missing_rate": 0.0
+      },
+      "gender": {
+        "missing_count": 6,
+        "total_count": 50,
+        "missing_rate": 0.12
+      },
+      "location": {
+        "missing_count": 49,
+        "total_count": 50,
+        "missing_rate": 0.98
+      },
+      "occupation": {
+        "missing_count": 12,
+        "total_count": 50,
+        "missing_rate": 0.24
+      },
+      "years_with_crohns": {
+        "missing_count": 2,
+        "total_count": 50,
+        "missing_rate": 0.04
+      },
+      "biologic_use": {
+        "missing_count": 1,
+        "total_count": 50,
+        "missing_rate": 0.02
+      },
+      "biologic_timing": {
+        "missing_count": 0,
+        "total_count": 50,
+        "missing_rate": 0.0
+      },
+      "biologic_names": {
+        "missing_count": 13,
+        "total_count": 50,
+        "missing_rate": 0.26
+      },
+      "planned_biologic_names": {
+        "missing_count": 37,
+        "total_count": 50,
+        "missing_rate": 0.74
+      },
+      "non_biologic_treatments": {
+        "missing_count": 1,
+        "total_count": 50,
+        "missing_rate": 0.02
+      },
+      "reasons_not_on_biologic": {
+        "missing_count": 41,
+        "total_count": 50,
+        "missing_rate": 0.82
+      },
+      "referral_pathway_steps": {
+        "missing_count": 20,
+        "total_count": 50,
+        "missing_rate": 0.4
+      },
+      "referral_steps_count": {
+        "missing_count": 33,
+        "total_count": 50,
+        "missing_rate": 0.66
+      }
+    },
+    "timing_distribution": {
+      "current": 36,
+      "considering": 10,
+      "past": 1,
+      "unknown": 1,
+      "planned": 1,
+      "never": 1
+    },
+    "consistency_issue_count": 0,
+    "consistency_issues": []
+  },
+  "business_questions": {
+    "q1_biologic_prevalence": {
+      "current_count": 36,
+      "total_count": 50,
+      "percent_of_all": 72.0,
+      "known_timing_count": 49,
+      "percent_of_known_timing": 73.47
+    },
+    "q2_reasons_not_on_biologic": {
+      "not_current_count": 14,
+      "reason_counts": {
+        "cost": 4,
+        "insurance": 5,
+        "side_effect_fear": 4,
+        "needle_fear": 1,
+        "doctor_advice": 1
+      },
+      "reason_ranked": [
+        [
+          "insurance",
+          5
+        ],
+        [
+          "cost",
+          4
+        ],
+        [
+          "side_effect_fear",
+          4
+        ],
+        [
+          "needle_fear",
+          1
+        ],
+        [
+          "doctor_advice",
+          1
+        ]
+      ]
+    },
+    "q3_pre_biologic_treatments": {
+      "top_in_not_current_cohort": [
+        [
+          "mesalamine",
+          15
+        ],
+        [
+          "prednisone",
+          11
+        ],
+        [
+          "budesonide",
+          5
+        ],
+        [
+          "methotrexate",
+          4
+        ],
+        [
+          "sulfasalazine",
+          3
+        ],
+        [
+          "azathioprine",
+          3
+        ],
+        [
+          "iron supplements",
+          1
+        ],
+        [
+          "ppis",
+          1
+        ],
+        [
+          "folic acid",
+          1
+        ],
+        [
+          "probiotics",
+          1
+        ],
+        [
+          "antibiotics",
+          1
+        ]
+      ],
+      "top_in_all_patients": [
+        [
+          "mesalamine",
+          41
+        ],
+        [
+          "prednisone",
+          33
+        ],
+        [
+          "methotrexate",
+          24
+        ],
+        [
+          "azathioprine",
+          19
+        ],
+        [
+          "sulfasalazine",
+          8
+        ],
+        [
+          "budesonide",
+          7
+        ],
+        [
+          "vitamin d",
+          3
+        ],
+        [
+          "antidepressants",
+          3
+        ],
+        [
+          "6-mp",
+          2
+        ],
+        [
+          "calcium",
+          2
+        ],
+        [
+          "supplements",
+          2
+        ],
+        [
+          "synthroid",
+          2
+        ],
+        [
+          "b12 supplements",
+          1
+        ],
+        [
+          "iron supplements",
+          1
+        ],
+        [
+          "b12 injections",
+          1
+        ]
+      ]
+    },
+    "q4_referral_pathway": {
+      "records_with_known_steps": 30,
+      "step_count_distribution": {
+        "2": 10,
+        "3": 8,
+        "1": 11,
+        "4": 1
+      },
+      "median_step_count": 2.0,
+      "most_common_pathways": [
+        [
+          "Gastroenterologist",
+          7
+        ],
+        [
+          "Emergency Department -> Gastroenterologist",
+          3
+        ],
+        [
+          "Doctor",
+          3
+        ],
+        [
+          "GP/Primary Care -> Gastroenterologist",
+          2
+        ],
+        [
+          "Doctor -> Gastroenterologist",
+          2
+        ],
+        [
+          "Endocrinologist -> Gastroenterologist -> Gastroenterologist",
+          1
+        ],
+        [
+          "Dr. Anderson (GI)",
+          1
+        ],
+        [
+          "University health center -> Emergency Department -> Doctor",
+          1
+        ],
+        [
+          "GP/Primary Care -> Gastroenterologist -> Rheumatologist -> Endocrinologist",
+          1
+        ],
+        [
+          "Doctor -> Gastroenterologist -> Rheumatologist",
+          1
+        ]
+      ]
+    }
+  },
+  "limitations": {
+    "churn_suspected_distribution": {
+      "true": 8,
+      "false": 27,
+      "unknown": 15
+    },
+    "missing_fields_per_record": {
+      "average": 4.38,
+      "median": 4.0,
+      "max": 8,
+      "min": 2
+    }
+  }
+}

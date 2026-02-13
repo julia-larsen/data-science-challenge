@@ -1,0 +1,8 @@
+litellm==1.48.11
+pydantic==2.7.4
+pytest==8.4.2
+matplotlib==3.9.4
+plotly==5.24.1
+kaleido==0.2.1
+transformers==4.46.3
+torch==2.4.1
