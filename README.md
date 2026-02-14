@@ -21,7 +21,6 @@
 - Typical referral depth (where inferable): median `2` steps.
 - Churn/incompleteness is material (`8` churn-suspected, high missingness in referral/location fields), so findings are directional.
 
-[Back to Table of Contents](#toc)
 
 ## Reproducibility
 
