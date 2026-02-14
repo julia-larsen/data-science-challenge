@@ -147,6 +147,11 @@ Supportive comparison (exploratory, small-sample):
 
 Note: this comparison uses only records with inferable referral-step counts, so larger and more complete data is needed for stronger conclusions.
 
+Exploratory read of this split:
+- In records with pathway detail, mean referral steps are slightly higher for `current` vs `not_current` (`2.10` vs `1.67`), while median is `2` for both groups.
+- No single pathway step is clearly discriminative in this sample (e.g., gastroenterologist appears frequently in both groups).
+- This is useful hypothesis generation, but not a decision-grade causal signal; a larger dataset is required to test step-level effects robustly.
+
 Supportive pathway-flow view (exploratory, transition-level):
 
 ![Referral pathway sankey](data/figures/referral_pathway_sankey.png)
