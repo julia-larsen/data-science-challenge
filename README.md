@@ -22,6 +22,7 @@
 - Typical referral depth (where inferable): median `2` steps.
 - Churn/incompleteness is material (`8` churn-suspected, high missingness in referral/location fields), so findings are directional.
 - Commercial takeaway: near-term opportunity is to focus on access + safety messaging for patients in `considering`/`planned` states.
+- Next data step: expand not-current sample size, improve referral-path completeness, and track conversion from `considering/planned` to `current`.
 
 
 ## Reproducibility
