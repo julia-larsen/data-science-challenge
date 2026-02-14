@@ -11,6 +11,7 @@
 - [Methodology](#methodology)
 - [Schema Design Rationale (Pydantic)](#schema-design-rationale-pydantic)
 - [Commercial Implications (With Caveats)](#commercial-implications-with-caveats)
+- [Next Data Collection Plan](#next-data-collection-plan)
 - [Optional Engineering Extras Implemented](#optional-engineering-extras-implemented)
 
 ## Executive Summary
