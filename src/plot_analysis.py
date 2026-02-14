@@ -166,57 +166,83 @@ def chart_churn_distribution(summary: Dict, out_dir: Path) -> Path:
 
 
 def chart_reason_rates_by_timing(rows: List[Dict], out_dir: Path) -> Path:
-    key_reasons = ["insurance", "cost", "side_effect_fear"]
-    preferred_order = ["considering", "planned", "past", "never", "unknown", "current"]
-    timing_counts = Counter(str(row.get("biologic_timing")) for row in rows)
-    timings = [t for t in preferred_order if t in timing_counts]
-
-    numerators: Dict[str, List[float]] = {reason: [] for reason in key_reasons}
-    denominators: List[int] = []
-    for timing in timings:
-        cohort = [row for row in rows if str(row.get("biologic_timing")) == timing]
-        denom = len(cohort)
-        denominators.append(denom)
-        for reason in key_reasons:
-            if denom == 0:
-                numerators[reason].append(0.0)
-                continue
-            count = sum(
-                1
-                for row in cohort
-                if reason
-                in {
-                    normalize_reason(r)
-                    for r in (row.get("reasons_not_on_biologic") or [])
-                }
-            )
-            numerators[reason].append((count / denom) * 100)
-
-    plt.figure(figsize=(10, 5))
-    x = list(range(len(timings)))
-    width = 0.24
+    # Use counts (not percentages) to avoid a misleading "must sum to 100%" read.
+    # Reasons are multi-label (a patient can mention more than one).
+    key_groups = ["insurance", "cost", "side_effect_fear", "no_reason_reported"]
     palette = {
         "insurance": "#B85C38",
         "cost": "#2A6F97",
         "side_effect_fear": "#6C5B7B",
+        "no_reason_reported": "#7D8597",
     }
-    for i, reason in enumerate(key_reasons):
-        offset = (i - 1) * width
-        xs = [xi + offset for xi in x]
-        ys = numerators[reason]
-        plt.bar(xs, ys, width=width, label=reason, color=palette[reason], alpha=0.9)
 
-    labels = [f"{timing}\n(n={n})" for timing, n in zip(timings, denominators)]
+    considering_rows = [
+        row for row in rows if row.get("biologic_timing") == "considering"
+    ]
+    other_not_current_rows = [
+        row
+        for row in rows
+        if row.get("biologic_timing") != "current"
+        and row.get("biologic_timing") != "considering"
+    ]
+    cohorts = [
+        ("considering", considering_rows),
+        ("other_not_current", other_not_current_rows),
+    ]
+
+    counts_by_group: Dict[str, List[int]] = {group: [] for group in key_groups}
+    labels: List[str] = []
+
+    for cohort_name, cohort_rows in cohorts:
+        labels.append(f"{cohort_name}\n(n={len(cohort_rows)})")
+        for group in key_groups:
+            if group == "no_reason_reported":
+                count = sum(
+                    1
+                    for row in cohort_rows
+                    if len(row.get("reasons_not_on_biologic") or []) == 0
+                )
+            else:
+                count = sum(
+                    1
+                    for row in cohort_rows
+                    if group
+                    in {
+                        normalize_reason(reason)
+                        for reason in (row.get("reasons_not_on_biologic") or [])
+                    }
+                )
+            counts_by_group[group].append(count)
+
+    plt.figure(figsize=(10, 5))
+    x = list(range(len(labels)))
+    width = 0.2
+    for i, group in enumerate(key_groups):
+        offset = (i - 1.5) * width
+        xs = [xi + offset for xi in x]
+        ys = counts_by_group[group]
+        bars = plt.bar(
+            xs, ys, width=width, label=group, color=palette[group], alpha=0.92
+        )
+        for bar, value in zip(bars, ys):
+            plt.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height(),
+                f"{value}",
+                ha="center",
+                va="bottom",
+                fontsize=8,
+            )
+
     plt.xticks(x, labels)
-    plt.ylabel("% of timing cohort")
-    plt.xlabel("Biologic timing")
-    plt.title("Barrier Rates By Biologic Timing (Exploratory)")
-    plt.ylim(0, 100)
+    plt.ylabel("Patients mentioning barrier")
+    plt.xlabel("Biologic timing cohort")
+    plt.title("Barrier Counts By Biologic Timing (Multi-label, Exploratory)")
     plt.grid(axis="y", alpha=0.2)
     plt.legend()
     plt.tight_layout()
 
-    output_path = out_dir / "barrier_rates_by_biologic_timing.png"
+    output_path = out_dir / "barrier_counts_by_biologic_timing.png"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_path, dpi=160)
     plt.close()
