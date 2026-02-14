@@ -268,6 +268,28 @@ Confidence caveat:
 
 [Back to Table of Contents](#toc)
 
+## Next Data Collection Plan
+
+To move from directional insight to decision-grade evidence, prioritize these data actions:
+
+1. Expand sample size with a targeted not-on-biologic oversample:
+   ensure enough records in `considering/planned/not_current` segments for stable barrier estimates.
+2. Increase pathway completeness:
+   collect explicit provider sequence (`GP -> GI -> specialist`) and timestamped transitions where possible.
+3. Improve barrier detail capture:
+   separate payer/access issues (coverage denial, prior authorization, out-of-pocket burden) from safety/experience concerns.
+4. Add minimal outcome follow-up:
+   capture whether `considering/planned` patients start biologic within a fixed follow-up window.
+5. Track churn context:
+   distinguish true “no barrier reported” from interview truncation to reduce missingness bias.
+
+Success criteria for next iteration:
+- materially lower missingness in referral and barrier fields
+- enough subgroup counts to compare readiness-stage cohorts with narrower uncertainty
+- ability to report conversion from `considering/planned` to `current` with confidence bounds
+
+[Back to Table of Contents](#toc)
+
 ## Optional Engineering Extras Implemented
 
 ### 1. Sankey Diagram For Referral Pathways
