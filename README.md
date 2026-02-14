@@ -20,6 +20,7 @@
 - Main barriers for not-on-biologic cohort (`n=14`): `insurance`, `cost`, `side_effect_fear`.
 - Typical referral depth (where inferable): median `2` steps.
 - Churn/incompleteness is material (`8` churn-suspected, high missingness in referral/location fields), so findings are directional.
+- Commercial takeaway: near-term opportunity is to focus on access + safety messaging for patients in `considering`/`planned` states.
 
 
 ## Reproducibility
@@ -114,6 +115,8 @@ Reason counts (non-mutually-exclusive):
 - `needle_fear`: 1 (`7.14%`)
 - `doctor_advice`: 1 (`7.14%`)
 
+Note: patients can mention multiple barriers, so percentages do not add to 100%.
+
 Interpretation:
 - Access barriers (insurance + cost) are the strongest observed blockers.
 - Safety concern (side-effect fear) is similarly prominent.
@@ -164,12 +167,12 @@ Supportive comparison (exploratory, small-sample):
 
 ![Referral steps by biologic status](data/figures/referral_steps_by_biologic_status.png)
 
-Note: this comparison uses only records with inferable referral-step counts, so larger and more complete data is needed for stronger conclusions.
+Note: this comparison uses only records with referral-step information, so larger and more complete data is needed for stronger conclusions.
 
 Exploratory read of this split:
 - In records with pathway detail, mean referral steps are slightly higher for `current` vs `not_current` (`2.10` vs `1.67`), while median is `2` for both groups.
 - No single pathway step is clearly discriminative in this sample (e.g., gastroenterologist appears frequently in both groups).
-- This is hypothesis generation, but not a decision-grade causal signal; a larger dataset is required to test step-level effects robustly.
+- This is useful for hypothesis generation, but not yet strong enough to claim a causal pathway effect. A larger dataset is required.
 
 Supportive pathway-flow view (exploratory, transition-level):
 
@@ -205,6 +208,7 @@ Stakeholder communication guidance:
 - Treat percentages as directional for this sample, not population estimates.
 - Prioritize decisions that remain robust under missing-data sensitivity checks.
 - Collect follow-up data on access barriers and referral detail before commercial commitments.
+- Use these findings to prioritize message testing and pilot targeting, then validate with a larger sample.
 
 [Back to Table of Contents](#toc)
 
