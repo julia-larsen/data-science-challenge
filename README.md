@@ -1,11 +1,27 @@
 # mama health - Data Scientist Challenge Solution
 
+<a id="toc"></a>
+## Table Of Contents
+
+- [Executive Summary](#executive-summary)
+- [Reproducibility](#reproducibility)
+- [Pre-Analysis QA And Assumptions](#pre-analysis-qa-and-assumptions)
+- [Business Questions](#business-questions)
+- [Data Limitations (Churn and Incompleteness)](#data-limitations-churn-and-incompleteness)
+- [Methodology](#methodology)
+- [Schema Design Rationale (Pydantic)](#schema-design-rationale-pydantic)
+- [Commercial Implications (With Caveats)](#commercial-implications-with-caveats)
+- [Optional Engineering Extras Implemented](#optional-engineering-extras-implemented)
+
 ## Executive Summary
 
+- Sample size: `N=50` synthetic interviews (`n=14` not-current subgroup for barrier analysis).
 - Current biologic prevalence: `36/50` (`72.0%`), or `73.47%` on known-timing records.
 - Main barriers for not-on-biologic cohort (`n=14`): `insurance`, `cost`, `side_effect_fear`.
 - Typical referral depth (where inferable): median `2` steps.
 - Churn/incompleteness is material (`8` churn-suspected, high missingness in referral/location fields), so findings are directional.
+
+[Back to Table of Contents](#toc)
 
 ## Reproducibility
 
@@ -52,6 +68,8 @@ Primary outputs:
 
 Run timestamp for results below: February 13, 2026.
 
+[Back to Table of Contents](#toc)
+
 ## Pre-Analysis QA And Assumptions
 
 Data QA checks were run before analysis:
@@ -76,6 +94,8 @@ Assumptions used for business calculations:
 - Cross-factor charts that compare subgroups can become very noisy quickly at this sample size.
 - The not-on-biologic cohort is only `n=14`, so percentages in that slice should be interpreted cautiously.
 - These patterns should be re-evaluated on a materially larger dataset before commercial decisions.
+
+[Back to Table of Contents](#toc)
 
 ## Business Questions
 
@@ -150,13 +170,15 @@ Note: this comparison uses only records with inferable referral-step counts, so 
 Exploratory read of this split:
 - In records with pathway detail, mean referral steps are slightly higher for `current` vs `not_current` (`2.10` vs `1.67`), while median is `2` for both groups.
 - No single pathway step is clearly discriminative in this sample (e.g., gastroenterologist appears frequently in both groups).
-- This is useful hypothesis generation, but not a decision-grade causal signal; a larger dataset is required to test step-level effects robustly.
+- This is hypothesis generation, but not a decision-grade causal signal; a larger dataset is required to test step-level effects robustly.
 
 Supportive pathway-flow view (exploratory, transition-level):
 
 ![Referral pathway sankey](data/figures/referral_pathway_sankey.png)
 
 [Open interactive Sankey HTML](data/figures/referral_pathway_sankey.html)
+
+[Back to Table of Contents](#toc)
 
 ## Data Limitations (Churn and Incompleteness)
 
@@ -185,6 +207,8 @@ Stakeholder communication guidance:
 - Prioritize decisions that remain robust under missing-data sensitivity checks.
 - Collect follow-up data on access barriers and referral detail before commercial commitments.
 
+[Back to Table of Contents](#toc)
+
 ## Methodology
 
 1. LLM extraction:
@@ -202,6 +226,8 @@ Stakeholder communication guidance:
 
 4. Testing:
 - Unit tests in `tests/test_schema.py` cover future intent, ambiguity/missing-field handling, quote-length enforcement, and timing/use consistency.
+
+[Back to Table of Contents](#toc)
 
 ## Schema Design Rationale (Pydantic)
 
@@ -223,6 +249,8 @@ Validation choices were intentionally conservative:
 - clip evidence quotes for auditability and compact reporting
 - auto-track missing fields to make downstream limitations quantifiable
 
+[Back to Table of Contents](#toc)
+
 ## Commercial Implications (With Caveats)
 
 Directional actions from this sample:
@@ -234,6 +262,8 @@ Directional actions from this sample:
 
 Confidence caveat:
 - Results are descriptive, not inferential (`N=50` total; `n=14` not-current subgroup), so these should guide hypothesis prioritization and next data collection, not final commercial commitments.
+
+[Back to Table of Contents](#toc)
 
 ## Optional Engineering Extras Implemented
 
@@ -304,3 +334,5 @@ Threshold sweep (same model/data):
 Interpretation:
 - This baseline is useful as an independent open-source check, but over-predicts labels in this setting.
 - The Gemini structured extraction remains the primary signal; HF baseline is a robustness sanity check.
+
+[Back to Table of Contents](#toc)
