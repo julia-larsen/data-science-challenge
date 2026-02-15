@@ -127,7 +127,7 @@ Supportive cross-factor view (exploratory, small-sample):
 
 ![Barrier counts by biologic timing](data/figures/barrier_counts_by_biologic_timing.png)
 
-Note: this is a multi-label count chart (patients can appear in multiple barrier bars), and includes `no_reason_reported`. It is directional and needs larger subgroup sizes to be decision-grade.
+Note: this compares two business-friendly cohorts (`Considering now` vs `Other not-current statuses` = planned/past/never/unknown). It is a multi-label count chart (patients can appear in multiple barrier bars), includes `no_reason_reported` as `No barrier stated`, and is directional only until subgroup sizes are larger.
 
 ### 3. What other treatments are commonly discussed/tried before biologic?
 

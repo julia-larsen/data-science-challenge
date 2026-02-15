@@ -169,11 +169,11 @@ def chart_reason_rates_by_timing(rows: List[Dict], out_dir: Path) -> Path:
     # Use counts (not percentages) to avoid a misleading "must sum to 100%" read.
     # Reasons are multi-label (a patient can mention more than one).
     key_groups = ["insurance", "cost", "side_effect_fear", "no_reason_reported"]
-    palette = {
-        "insurance": "#B85C38",
-        "cost": "#2A6F97",
-        "side_effect_fear": "#6C5B7B",
-        "no_reason_reported": "#7D8597",
+    label_by_group = {
+        "insurance": "Insurance coverage",
+        "cost": "Out-of-pocket cost",
+        "side_effect_fear": "Side-effect concern",
+        "no_reason_reported": "No barrier stated",
     }
 
     considering_rows = [
@@ -186,15 +186,13 @@ def chart_reason_rates_by_timing(rows: List[Dict], out_dir: Path) -> Path:
         and row.get("biologic_timing") != "considering"
     ]
     cohorts = [
-        ("considering", considering_rows),
-        ("other_not_current", other_not_current_rows),
+        ("Considering now", considering_rows),
+        ("Other not-current statuses", other_not_current_rows),
     ]
 
     counts_by_group: Dict[str, List[int]] = {group: [] for group in key_groups}
-    labels: List[str] = []
 
-    for cohort_name, cohort_rows in cohorts:
-        labels.append(f"{cohort_name}\n(n={len(cohort_rows)})")
+    for _cohort_name, cohort_rows in cohorts:
         for group in key_groups:
             if group == "no_reason_reported":
                 count = sum(
@@ -214,31 +212,65 @@ def chart_reason_rates_by_timing(rows: List[Dict], out_dir: Path) -> Path:
                 )
             counts_by_group[group].append(count)
 
-    plt.figure(figsize=(10, 5))
-    x = list(range(len(labels)))
-    width = 0.2
-    for i, group in enumerate(key_groups):
-        offset = (i - 1.5) * width
-        xs = [xi + offset for xi in x]
-        ys = counts_by_group[group]
-        bars = plt.bar(
-            xs, ys, width=width, label=group, color=palette[group], alpha=0.92
-        )
-        for bar, value in zip(bars, ys):
+    ordered_groups = sorted(
+        key_groups,
+        key=lambda group: counts_by_group[group][0] + counts_by_group[group][1],
+        reverse=True,
+    )
+
+    cohort_a_name = f"{cohorts[0][0]} (n={len(cohorts[0][1])})"
+    cohort_b_name = (
+        f"{cohorts[1][0]} (planned/past/never/unknown, n={len(cohorts[1][1])})"
+    )
+
+    y = list(range(len(ordered_groups)))
+    height = 0.35
+    cohort_a_values = [counts_by_group[group][0] for group in ordered_groups]
+    cohort_b_values = [counts_by_group[group][1] for group in ordered_groups]
+
+    plt.figure(figsize=(11, 5.5))
+    bars_a = plt.barh(
+        [yi + height / 2 for yi in y],
+        cohort_a_values,
+        height=height,
+        color="#2A6F97",
+        label=cohort_a_name,
+        alpha=0.92,
+    )
+    bars_b = plt.barh(
+        [yi - height / 2 for yi in y],
+        cohort_b_values,
+        height=height,
+        color="#7D8597",
+        label=cohort_b_name,
+        alpha=0.92,
+    )
+
+    for bars in (bars_a, bars_b):
+        for bar in bars:
+            value = int(bar.get_width())
+            if value == 0:
+                continue
             plt.text(
-                bar.get_x() + bar.get_width() / 2,
-                bar.get_height(),
+                value + 0.05,
+                bar.get_y() + bar.get_height() / 2,
                 f"{value}",
-                ha="center",
-                va="bottom",
-                fontsize=8,
+                va="center",
+                ha="left",
+                fontsize=9,
             )
 
-    plt.xticks(x, labels)
-    plt.ylabel("Patients mentioning barrier")
-    plt.xlabel("Biologic timing cohort")
-    plt.title("Barrier Counts By Biologic Timing (Multi-label, Exploratory)")
-    plt.grid(axis="y", alpha=0.2)
+    max_count = (
+        max(cohort_a_values + cohort_b_values)
+        if (cohort_a_values or cohort_b_values)
+        else 0
+    )
+    plt.xlim(0, max_count + 1)
+    plt.yticks(y, [label_by_group[group] for group in ordered_groups])
+    plt.xlabel("Patients mentioning barrier (multi-label counts)")
+    plt.ylabel("Barrier")
+    plt.title("Barrier Mentions: Considering Now vs Other Not-Current (Exploratory)")
+    plt.grid(axis="x", alpha=0.2)
     plt.legend()
     plt.tight_layout()
 
